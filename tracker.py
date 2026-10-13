@@ -54,15 +54,40 @@ def add_application(position_id, applied_date, notes=None):
     return application_id
 
 
+def list_applications():
+    """מחזירה את כל ההגשות עם שם החברה ושם המשרה"""
+    conn = get_connection()
+    rows = conn.execute(
+        """SELECT a.id, c.name, p.title, a.applied_date, a.status
+           FROM applications a
+           JOIN positions p ON a.position_id = p.id
+           JOIN companies c ON p.company_id = c.id
+           ORDER BY a.applied_date DESC"""
+    ).fetchall()
+    conn.close()
+    return rows
+
+def list_by_status(status):
+    """מחזירה את כל ההגשות עם סטטוס מסוים"""
+    conn = get_connection()
+    rows = conn.execute(
+        """SELECT a.id, c.name, p.title, a.applied_date, a.status
+           FROM applications a
+           JOIN positions p ON a.position_id = p.id
+           JOIN companies c ON p.company_id = c.id
+           WHERE a.status = ?
+           ORDER BY a.applied_date DESC""",
+        (status,)
+    ).fetchall()
+    conn.close()
+    return rows
+
+
 if __name__ == "__main__":
-    pos_id = add_position("Software Engineer - Student", 1)
-    print("Added position with id:", pos_id)
+    print("Interviews:")
+    for app in list_by_status("interview"):
+        print(app)
 
-    app_id = add_application(pos_id, "2026-10-04", "Applied via company website")
-    print("Added application with id:", app_id)
-
-    ok = update_status(app_id, "interview")
-    print("Status updated:", ok)
-
-    ok = update_status(999, "offer")
-    print("Update non-existing application:", ok)
+    print("Rejected:")
+    for app in list_by_status("rejected"):
+        print(app)
