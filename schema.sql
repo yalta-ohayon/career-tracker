@@ -1,10 +1,10 @@
-CREATE TABLE companies (
+CREATE TABLE IF NOT EXISTS companies (
     id      INTEGER PRIMARY KEY AUTOINCREMENT, --מספר מזהה ייחודי לכל חברה 
     name    TEXT NOT NULL UNIQUE,--אומר שאי אפשר להכניס את אותה חברה פעמיים 
     field   TEXT -- תחום עיסוק של החברה 
 );
 
-CREATE TABLE positions(
+CREATE TABLE IF NOT EXISTS positions(
     id          INTEGER PRIMARY KEY AUTOINCREMENT, --מספר מזהה ייחודי לכל משרה 
     title       TEXT NOT NULL, --שם המשרה 
     description TEXT, --תיאור המשרה 
@@ -12,7 +12,7 @@ CREATE TABLE positions(
     FOREIGN KEY (company_id) REFERENCES companies(id)   
 );
 
-CREATE TABLE applications(
+CREATE TABLE IF NOT EXISTS applications(
     id          INTEGER PRIMARY KEY AUTOINCREMENT, --מספר מזהה ייחודי לכל בקשה 
     position_id INTEGER NOT NULL, --מזהה המשרה אליה נשלחה הבקשה 
     applied_date TEXT NOT NULL, --תאריך שליחת הבקשה
